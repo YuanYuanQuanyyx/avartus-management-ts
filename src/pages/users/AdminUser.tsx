@@ -1,44 +1,27 @@
 import React from 'react'
-import { Form, Input, Button, Card, message } from 'antd';
+import { Form, Input, Button, Card } from 'antd';
 import { LockOutlined } from '@ant-design/icons';
-import './admin.css'
-import { getOtp_uuid } from '../../utils/auth'
+import './admin.css';
+import { withRouter } from 'react-router-dom';
 import QRcode from './twoAuth.png'
-import { loginApi } from '../../services/auth';
-import { setToken } from '../../utils/auth';
+import { userActions } from '../../actions/users';
+import { connect } from 'react-redux';
 
 class AdminUser extends React.Component<any, any> {
 
-    secondLogin = (form: any) => {
-        var data = {
-            "args":{
-                "otp_uuid": getOtp_uuid(),
-                "otp": form.pin
-            }
-        }
-        console.log(data);
-        loginApi(data)
-        .then((res) => {
-            console.log(res);
-            if (res.status === 200) {
-                if (res.data.result.token) {
-                    setToken(res.data.result.token)
-                    this.props.history.push('/users/regular')
-                }
-            }
-          }, (error) => {
-            console.log(error);
-            message.error("Incorrect Pin!")
-          });
-    }
-
     render() {
+        const onFinish = (values: any) => {
+            console.log('Received values of form: ', values);
+            const { dispatch } = this.props;
+            dispatch(userActions.authorize(localStorage.getItem('otp_uuid'), values.pin));
+          };
+
         return  (
             <Card title="Login SYS" className="second-login-card">
                 <img width={200} src={QRcode} alt='2FA QR'/>
                 <Form
                     name="second_login"
-                    onFinish = {this.secondLogin}
+                    onFinish = {onFinish}
 
                 >
                     <Form.Item
@@ -63,4 +46,14 @@ class AdminUser extends React.Component<any, any> {
     }
 }
 
-export default AdminUser
+function mapStateToProps(state: any) {
+    console.log("Login state: ", state);
+    const { loggedIn, user, authorizedIn } = state.authentication;
+    return {
+        loggedIn,
+        user,
+        authorizedIn
+    };
+}
+
+export default withRouter(connect(mapStateToProps)(AdminUser));

@@ -1,49 +1,25 @@
 import React from 'react'
-import { Form, Input, Card, Button, message } from 'antd';
+import { Form, Input, Card, Button } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
-import { setToken, setOtp_uuid } from '../utils/auth';
 import { withRouter } from 'react-router-dom';
-import { loginApi } from '../services/auth';
 import './login.css';
-//import setAuthorization from '../utils/setAuthorizationToken';
+import { userActions } from '../actions/users';
+import { connect } from 'react-redux';
 
 class Login extends React.Component<any, any> {
 
-    login = (form: any) => {
-        var data = {
-            "args":{
-                "email": form.username,
-                "password": form.password
-            }
-        }
-        console.log(data);
-        loginApi(data)
-        .then((res) => {
-            console.log(res);
-            if (res.status === 200) {
-                if (res.data.result.otp_uuid) {
-                    setOtp_uuid(res.data.result.otp_uuid)
-                    this.props.history.push('/users/admin')
-                } else if (res.data.result.token) {
-                    setToken(res.data.result.token)
-                    //setAuthorization(res.data.result.token);
-                    this.props.history.push('/users/regular')
-                }
-            }
-        })
-        .catch((error) => {
-            console.log(error);
-            message.error("Incorrect username or password!")
-        })
-    }
-
     render() {
+        const onFinish = (values: any) => {
+            console.log('Received values of form: ', values);
+            const { dispatch } = this.props;
+            dispatch(userActions.login(values.username, values.password));
+          };
+
         return (
             <Card title="Login SYS" className="login-card">
                 <Form
                     name="login"
-                    onFinish = {this.login}
-
+                    onFinish = {onFinish}
                 >
                     <Form.Item
                         name="username"
@@ -77,4 +53,15 @@ class Login extends React.Component<any, any> {
 
 }
 
-export default withRouter(Login)
+function mapStateToProps(state: any) {
+    console.log("Login state: ", state);
+    const { loggedIn, user, error, authorizedIn } = state.authentication;
+    return {
+        loggedIn,
+        user,
+        error,
+        authorizedIn
+    };
+}
+
+export default withRouter(connect(mapStateToProps)(Login));
