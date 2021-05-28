@@ -1,31 +1,37 @@
-import React from 'react';
-import { Switch, Route, Redirect } from 'react-router-dom';
-import { userRoutes } from './routes';
+import React, { Fragment } from 'react';
+import { Route, withRouter, Redirect } from 'react-router-dom';
+import { connect } from 'react-redux'
+import Login from './pages/Login';
+import RegularUser from './pages/users/RegularUser';
+import AdminUser from './pages/users/AdminUser';
 
-class App extends React.Component {
+class App extends React.Component<any, any> {
+
   render() {
+
+    const { loggedIn, authorizingIn } = this.props;
     return (
-      <div className="App">
-        <h1>Welcome back!</h1>
-        <Switch>
-          {userRoutes.map(route => {
-            return (
-              <Route
-                key={route.path}
-                path={route.path}
-                exact
-                render={routeProps => {
-                  return <route.component {...routeProps} />;
-                }}
-              />
-            );
-          })}
-          <Redirect to={userRoutes[0].path} from='/users'/>
-          <Redirect to='/404' />
-        </Switch>
-      </div>
+      <Fragment>
+        <Route path='/login' component = {Login} />
+        <Route exact path='/user/regular' component = {RegularUser}/>
+        <Route exact path='/user/admin' component = {AdminUser} />
+        <Redirect to='/login' from='/' />
+        {!loggedIn && <Redirect to='/login' push/>}
+        {authorizingIn && <Redirect to='/user/admin' push/>}
+        {loggedIn && <Redirect to='/user/regular' push/>}
+      </Fragment>
     );
   }
 }
 
-export default App;
+function mapStateToProps(state: any) {
+  console.log("App state: ", state);
+  const { loggedIn, user, authorizingIn } = state.authentication;
+  return {
+      loggedIn,
+      user,
+      authorizingIn
+  };
+}
+
+export default withRouter(connect(mapStateToProps)(App));
