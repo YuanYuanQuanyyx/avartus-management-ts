@@ -41,7 +41,6 @@
             };
         case userConstants.LOGOUT:
             return {
-                ...state,
                 loggedIn: false,
                 user: {}
             };
