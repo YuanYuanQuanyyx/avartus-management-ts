@@ -28,6 +28,7 @@ function mapStateToProps(state: any) {
   console.log("App state: ", state);
   const { loggedIn, user, authorizingIn } = state.authentication;
   return {
+     ...state,
       loggedIn,
       user,
       authorizingIn

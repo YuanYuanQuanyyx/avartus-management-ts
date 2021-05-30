@@ -1,18 +1,19 @@
-import React from 'react'
-import { Form, Input, Card, Button, Checkbox } from 'antd';
+import React, { ReactElement } from 'react'
+import { Form, Input, Card, Button } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { withRouter } from 'react-router-dom';
 import './login.css';
 import { userActions } from '../store/actions/users';
-import { connect } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
-class Login extends React.Component<any, any> {
+const LoginAlter: React.FC = ({
 
-    render() {
+}): ReactElement => {
+
         const onFinish = (values: any) => {
             console.log('Received values of form: ', values);
-            const { dispatch } = this.props;
-            dispatch(userActions.login(values.username, values.password, values.remember));
+            const dispatch = useDispatch();
+            dispatch(userActions.login(values.username, values.password, false));
         };
 
         return (
@@ -20,7 +21,6 @@ class Login extends React.Component<any, any> {
                 <Form
                     name="login"
                     onFinish = {onFinish}
-                    initialValues={{ remember: true }}
                 >
                     <Form.Item
                         name="username"
@@ -43,12 +43,6 @@ class Login extends React.Component<any, any> {
                     </Form.Item>
 
                     <Form.Item>
-                        <Form.Item name="remember" valuePropName="checked" noStyle>
-                        <Checkbox>Remember me for 30 days</Checkbox>
-                        </Form.Item>
-                    </Form.Item>
-
-                    <Form.Item>
                         <Button type="primary" htmlType="submit" className="login-form-button">
                             Log in
                         </Button>
@@ -56,18 +50,10 @@ class Login extends React.Component<any, any> {
                 </Form>
             </Card>
         );
-    }
+
+
 }
 
-function mapStateToProps(state: any) {
-    console.log("Login state: ", state);
-    const { loggedIn, user, error, authorizedIn } = state.authentication;
-    return {
-        loggedIn,
-        user,
-        error,
-        authorizedIn
-    };
-}
+export default withRouter(LoginAlter);
 
-export default withRouter(connect(mapStateToProps)(Login));
+

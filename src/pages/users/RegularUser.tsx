@@ -1,11 +1,11 @@
 import React, { Fragment } from 'react';
 //import { ifExpire } from '../../utils/auth';
-import { userActions } from '../../actions/users';
+import { userActions } from '../../store/actions/users';
 import { Redirect, withRouter, Route } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Login from '../Login';
 import { Button } from 'antd';
-import jwt_decode from 'jwt-decode';
+//import jwt_decode from 'jwt-decode';
 
 class RegularUser extends React.Component<any, any> {
 
@@ -23,8 +23,9 @@ class RegularUser extends React.Component<any, any> {
     render() {
 
         //console.log("If token expired: ", ifExpire());
-        const { loggedIn, user } = this.props;
+        const { loggedIn, user, authorizedIn } = this.props;
         let reDirect = !loggedIn ? <Redirect to='/login' push /> : '';
+        /*
         const token = localStorage.getItem('token');
         let ifAuthorized: boolean = false;
         if (token != null) {
@@ -33,11 +34,12 @@ class RegularUser extends React.Component<any, any> {
                 ifAuthorized = true;
             }
         }
+        */
 
         let welcomeMessage = !loggedIn ? '' :
         <div>
             <h3>Welcome Back, {user}</h3>
-            <Button type="primary" className="btn btn-primary" hidden={ifAuthorized}>
+            <Button type="primary" className="btn btn-primary" hidden={!authorizedIn}>
                 User
             </Button>
             <p/>
@@ -68,6 +70,7 @@ function mapStateToProps(state: any) {
     console.log("App state: ", state);
     const { loggedIn, user, authorizedIn } = state.authentication;
     return {
+        ...state,
         loggedIn,
         user,
         authorizedIn

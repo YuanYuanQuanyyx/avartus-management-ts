@@ -4,7 +4,7 @@ import { LockOutlined } from '@ant-design/icons';
 import './admin.css';
 import { withRouter } from 'react-router-dom';
 import QRcode from './twoAuth.png'
-import { userActions } from '../../actions/users';
+import { userActions } from '../../store/actions/users';
 import { connect } from 'react-redux';
 
 class AdminUser extends React.Component<any, any> {
@@ -50,6 +50,7 @@ function mapStateToProps(state: any) {
     console.log("Login state: ", state);
     const { loggedIn, user, authorizedIn } = state.authentication;
     return {
+        ...state,
         loggedIn,
         user,
         authorizedIn
