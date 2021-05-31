@@ -7,21 +7,14 @@ import {history} from '../../utils/history';
 
 const login = (email: any, password: any, remember: boolean) => {
 
-    const loginRequest = (user: any) => {
-        return { type: userConstants.LOGIN_REQUEST, user }
-    }
     const loginSuccess = (user: any) => {
         return { type: userConstants.LOGIN_SUCCESS, user }
     }
-    const loginFailure = (error: any) => {
-        return { type: userConstants.LOGIN_FAILURE, error }
-    }
-    const authorizeRequest = (user: any) => {
-        return { type: userConstants.AUTHORIZE_REQUEST, user }
+    const loginFailure = () => {
+        return { type: userConstants.LOGIN_FAILURE }
     }
 
     return (dispatch: any) => {
-        dispatch(loginRequest(email));
 
         var data = remember ? {
             "args":{
@@ -48,14 +41,13 @@ const login = (email: any, password: any, remember: boolean) => {
                     history.push('/user/regular');
                 } else if (res.data.result.otp_uuid) {
                     localStorage.setItem('otp_uuid', res.data.result.otp_uuid);
-                    dispatch(authorizeRequest(email));
                     history.push('/user/admin');
                 }
             }
         })
-        .catch( error => {
+        .catch( () => {
             message.error("Incorrect username or password!")
-            dispatch(loginFailure(error.message));
+            dispatch(loginFailure());
         });
     };
 }
@@ -65,14 +57,14 @@ const authorize = (otp_uuid: any, pin: number) => {
     const authorizeSuccess = (user: any) => {
         return { type: userConstants.AUTHORIZE_SUCCESS, user }
     }
-    const authorizeFailure = (error: any) => {
-        return { type: userConstants.AUTHORIZE_FAILURE, error }
+    const authorizeFailure = () => {
+        return { type: userConstants.AUTHORIZE_FAILURE }
     }
     const loginSuccess = (user: any) => {
         return { type: userConstants.LOGIN_SUCCESS, user }
     }
-    const loginFailure = (error: any) => {
-        return { type: userConstants.LOGIN_FAILURE, error }
+    const loginFailure = () => {
+        return { type: userConstants.LOGIN_FAILURE }
     }
 
     return (dispatch: any) => {
@@ -96,10 +88,10 @@ const authorize = (otp_uuid: any, pin: number) => {
                 }
             }
         })
-        .catch( error => {
+        .catch( () => {
             message.error("Incorrect pin!");
-            dispatch(authorizeFailure(error.message));
-            dispatch(loginFailure(error.message));
+            dispatch(authorizeFailure());
+            dispatch(loginFailure());
         });
     };
 }
