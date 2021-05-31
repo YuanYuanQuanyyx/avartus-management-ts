@@ -1,7 +1,15 @@
+import { userConstants } from '../../constants/users';
 
- import { userConstants } from '../../constants/users';
+const initState = {
+    loggingIn: false,
+    loggedIn: false,
+    authorizingIn: false,
+    authorizedIn: false,
+    user: "",
+    error: ""
+}
 
- export const authentication = (state = {}, action: any) => {
+ export const authentication = (state = initState, action: any) => {
     switch (action.type) {
         case userConstants.LOGIN_REQUEST:
             return {
@@ -44,7 +52,14 @@
                 loggedIn: false,
                 user: {}
             };
+        case userConstants.CHANGE_USER_NAME:
+            return {
+                ...state,
+                user: action.user
+            }
         default:
-            return state
+            return {
+                ...state
+            }
     }
  }

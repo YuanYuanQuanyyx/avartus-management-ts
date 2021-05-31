@@ -1,44 +1,66 @@
-import React, { Fragment } from 'react';
+import { Fragment } from 'react';
 //import { ifExpire } from '../../utils/auth';
 import { userActions } from '../../store/actions/users';
-import { Redirect, withRouter, Route } from 'react-router-dom';
-import { connect } from 'react-redux';
+import { Route, Redirect } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
 import Login from '../Login';
-import { Button } from 'antd';
+import { RootState } from '../../store/state/users';
+import { Form, Input, Button, Card } from 'antd';
 //import jwt_decode from 'jwt-decode';
 
-class RegularUser extends React.Component<any, any> {
+function RegularUser() {
 
-    constructor(props: any) {
-        super(props);
+    const user = useSelector((state:RootState) => state.authentication.user);
+    const loggedIn = useSelector((state:RootState) => state.authentication.loggedIn);
+    const authorizedIn = useSelector((state:RootState) => state.authentication.authorizedIn);
 
-        this.handleLogout = this.handleLogout.bind(this);
+    const dispatch = useDispatch();
+
+    function HandleLogout() {
+        dispatch(userActions.logout());
     }
 
-    handleLogout() {
-    const { dispatch } = this.props;
-    dispatch(userActions.logout());
-    }
+    //console.log("If token expired: ", ifExpire());
 
-    render() {
-
-        //console.log("If token expired: ", ifExpire());
-        const { loggedIn, user, authorizedIn } = this.props;
-        let reDirect = !loggedIn ? <Redirect to='/login' push /> : '';
-        /*
-        const token = localStorage.getItem('token');
-        let ifAuthorized: boolean = false;
-        if (token != null) {
-            var decodedToken:any = jwt_decode(token);
-            if (decodedToken.trust_level === "11") {
-                ifAuthorized = true;
-            }
+    let reDirect = !loggedIn ? <Redirect to='/login' push /> : '';
+    /*
+    const token = localStorage.getItem('token');
+    let ifAuthorized: boolean = false;
+    if (token != null) {
+        var decodedToken:any = jwt_decode(token);
+        if (decodedToken.trust_level === "11") {
+            ifAuthorized = true;
         }
-        */
+    }
+    */
+    const onFinish = (values: any) => {
+        dispatch(userActions.changeName(values.username));
+    }
 
-        let welcomeMessage = !loggedIn ? '' :
-        <div>
-            <h3>Welcome Back, {user}</h3>
+    let welcomeMessage = !loggedIn ? '' :
+    <Card title="Manager" className="manager">
+        <h3>Welcome Back, {user}</h3>
+        <Form
+            name="second_login"
+            onFinish = {onFinish}
+
+        >
+            <Form.Item
+                name="username"
+                rules={[{ required: true, message: 'Please input a username!' }]}
+            >
+            <Input
+                type="username"
+                placeholder="username"
+            />
+            </Form.Item>
+
+            <Form.Item>
+                <Button type="primary" htmlType="submit" className="login-form-button">
+                    Change Name
+                </Button>
+            </Form.Item>
+
             <Button type="primary" className="btn btn-primary" hidden={!authorizedIn}>
                 User
             </Button>
@@ -51,30 +73,20 @@ class RegularUser extends React.Component<any, any> {
                 Dgraph
             </Button>
             <p/>
-            <Button type="primary" className="btn btn-primary" onClick={this.handleLogout} >
+            <Button type="primary" className="btn btn-primary" onClick={HandleLogout} >
                 Logout
             </Button>
-        </div>;
+        </Form>
+    </Card>
 
-        return  (
-            <Fragment>
-                { welcomeMessage }
-                <Route path="/login" component={Login} />
-                { reDirect }
-            </Fragment>
-        )
-    }
+    return  (
+        <Fragment>
+            { welcomeMessage }
+            <Route path="/login" component={Login} />
+            {reDirect}
+        </Fragment>
+    )
+
 }
 
-function mapStateToProps(state: any) {
-    console.log("App state: ", state);
-    const { loggedIn, user, authorizedIn } = state.authentication;
-    return {
-        ...state,
-        loggedIn,
-        user,
-        authorizedIn
-    };
-  }
-
-export default withRouter(connect(mapStateToProps)(RegularUser));
+export default RegularUser;

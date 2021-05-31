@@ -2,6 +2,7 @@ import { userConstants } from '../../constants/users';
 import axios from 'axios';
 import jwt_decode from 'jwt-decode';
 import { message } from 'antd';
+import {history} from '../../utils/history';
 
 
 const login = (email: any, password: any, remember: boolean) => {
@@ -43,11 +44,12 @@ const login = (email: any, password: any, remember: boolean) => {
                 if (res.data.result.token) {
                     //console.log("Received token from backend:", res.data.result.token);
                     localStorage.setItem('token', res.data.result.token);
-                    var decodedToken:any = jwt_decode(res.data.result.token);
-                    dispatch(loginSuccess(decodedToken.email));
+                    dispatch(loginSuccess(email));
+                    history.push('/user/regular');
                 } else if (res.data.result.otp_uuid) {
                     localStorage.setItem('otp_uuid', res.data.result.otp_uuid);
                     dispatch(authorizeRequest(email));
+                    history.push('/user/admin');
                 }
             }
         })
@@ -90,6 +92,7 @@ const authorize = (otp_uuid: any, pin: number) => {
                     var decodedToken:any = jwt_decode(res.data.result.token);
                     dispatch(authorizeSuccess(decodedToken.email));
                     dispatch(loginSuccess(decodedToken.email));
+                    history.push('/user/regular');
                 }
             }
         })
@@ -105,8 +108,13 @@ const logout = () => {
     return { type: userConstants.LOGOUT };
 }
 
+const changeName = (user:string) => {
+    return {type: userConstants.CHANGE_USER_NAME, user}
+}
+
 export const userActions = {
     login,
     authorize,
-    logout
+    logout,
+    changeName
 };

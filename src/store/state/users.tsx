@@ -1,19 +1,10 @@
 export interface RootState {
-    loggingIn: boolean,
-    loggedIn: boolean,
-    authorizingIn: boolean,
-    authorizedIn: boolean,
-    user: any,
-    error: any
+    authentication: {
+        loggingIn: boolean,
+        loggedIn: boolean,
+        authorizingIn: boolean,
+        authorizedIn: boolean,
+        user: string,
+        error: string
+    }
 }
-
-const initState: RootState = {
-    loggingIn: false,
-    loggedIn: false,
-    authorizingIn: false,
-    authorizedIn: false,
-    user: {},
-    error:{}
-}
-
-export default initState
