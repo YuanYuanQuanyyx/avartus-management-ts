@@ -2,7 +2,7 @@ import { userConstants } from '../../constants/users';
 
 const initState = {
     loggedIn: false,
-    authorizedIn: false,
+    authenticatedIn: false,
     user: {}
 }
 

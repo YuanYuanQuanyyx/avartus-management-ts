@@ -1,8 +1,10 @@
-import { combineReducers } from 'redux';
-import { authentication } from './users'
+import { combineReducers, Reducer } from 'redux'
 
-const reducer = combineReducers({
-    authentication
-});
+import authReducer from '../../slices/auth'
+import { RootState } from '../state/users'
 
-export default reducer;
+const rootReducer: Reducer<RootState> = combineReducers<RootState>({
+  authState: authReducer,
+})
+
+export default rootReducer

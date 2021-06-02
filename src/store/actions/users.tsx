@@ -1,18 +1,11 @@
-import { userConstants } from '../../constants/users';
 import axios from 'axios';
 import jwt_decode from 'jwt-decode';
 import { message } from 'antd';
 import {history} from '../../utils/history';
+import { loginFailure, loginSuccess, authenticateSuccess, authenticateFailure } from '../../slices/auth';
 
 
 const login = (email: any, password: any, remember: boolean) => {
-
-    const loginSuccess = (user: any) => {
-        return { type: userConstants.LOGIN_SUCCESS, user }
-    }
-    const loginFailure = () => {
-        return { type: userConstants.LOGIN_FAILURE }
-    }
 
     return (dispatch: any) => {
 
@@ -33,7 +26,7 @@ const login = (email: any, password: any, remember: boolean) => {
         axios.post('https://avartus.cmu.edu.au/api/v1/auth', data)
         .then( res => {
             if (res.status === 200) {
-                //console.log(res);
+                console.log(res);
                 if (res.data.result.token) {
                     //console.log("Received token from backend:", res.data.result.token);
                     localStorage.setItem('token', res.data.result.token);
@@ -54,19 +47,6 @@ const login = (email: any, password: any, remember: boolean) => {
 
 const authorize = (otp_uuid: any, pin: number) => {
 
-    const authorizeSuccess = (user: any) => {
-        return { type: userConstants.AUTHORIZE_SUCCESS, user }
-    }
-    const authorizeFailure = () => {
-        return { type: userConstants.AUTHORIZE_FAILURE }
-    }
-    const loginSuccess = (user: any) => {
-        return { type: userConstants.LOGIN_SUCCESS, user }
-    }
-    const loginFailure = () => {
-        return { type: userConstants.LOGIN_FAILURE }
-    }
-
     return (dispatch: any) => {
 
         var data = {
@@ -82,7 +62,7 @@ const authorize = (otp_uuid: any, pin: number) => {
                 if (res.data.result.token) {
                     localStorage.setItem('token', res.data.result.token)
                     var decodedToken:any = jwt_decode(res.data.result.token);
-                    dispatch(authorizeSuccess(decodedToken.email));
+                    dispatch(authenticateSuccess(decodedToken.email));
                     dispatch(loginSuccess(decodedToken.email));
                     history.push('/user/regular');
                 }
@@ -90,23 +70,13 @@ const authorize = (otp_uuid: any, pin: number) => {
         })
         .catch( () => {
             message.error("Incorrect pin!");
-            dispatch(authorizeFailure());
+            dispatch(authenticateFailure());
             dispatch(loginFailure());
         });
     };
 }
 
-const logout = () => {
-    return { type: userConstants.LOGOUT };
-}
-
-const changeName = (user:string) => {
-    return {type: userConstants.CHANGE_USER_NAME, user}
-}
-
 export const userActions = {
     login,
-    authorize,
-    logout,
-    changeName
+    authorize
 };

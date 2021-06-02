@@ -1,23 +1,23 @@
 import { Fragment } from 'react';
 //import { ifExpire } from '../../utils/auth';
-import { userActions } from '../../store/actions/users';
 import { Route, Redirect } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import Login from '../Login';
 import { RootState } from '../../store/state/users';
 import { Form, Input, Button, Card } from 'antd';
+import { changeName, logout } from '../../slices/auth';
 //import jwt_decode from 'jwt-decode';
 
 function RegularUser() {
 
-    const user = useSelector((state:RootState) => state.authentication.user);
-    const loggedIn = useSelector((state:RootState) => state.authentication.loggedIn);
-    const authorizedIn = useSelector((state:RootState) => state.authentication.authorizedIn);
+    const user = useSelector((state: RootState) => state.authState.user);
+    const loggedIn = useSelector((state: RootState) => state.authState.loggedIn);
+    const authenticatedIn = useSelector((state: RootState) => state.authState.authenticatedIn);
 
     const dispatch = useDispatch();
 
     function HandleLogout() {
-        dispatch(userActions.logout());
+        dispatch(logout());
     }
 
     //console.log("If token expired: ", ifExpire());
@@ -34,7 +34,7 @@ function RegularUser() {
     }
     */
     const onFinish = (values: any) => {
-        dispatch(userActions.changeName(values.username));
+        dispatch(changeName(values.username));
     }
 
     let welcomeMessage = !loggedIn ? '' :
@@ -61,7 +61,7 @@ function RegularUser() {
                 </Button>
             </Form.Item>
 
-            <Button type="primary" className="btn btn-primary" hidden={!authorizedIn}>
+            <Button type="primary" className="btn btn-primary" hidden={!authenticatedIn}>
                 User
             </Button>
             <p/>
