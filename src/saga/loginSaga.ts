@@ -29,7 +29,7 @@ export function* loginSaga() {
             }
 
             let res
-            const generateNewNumber = (): Promise<AxiosResponse<any>> => {
+            const getResponse = (): Promise<AxiosResponse<any>> => {
                 const promise = new Promise<AxiosResponse<any>>(resolve => {
                   setTimeout(() => {
                     res = axios.post('https://avartus.cmu.edu.au/api/v1/auth', data)
@@ -39,9 +39,9 @@ export function* loginSaga() {
                 return promise;
             };
 
-            const generatedNumber = yield call(generateNewNumber)
+            const response = yield call(getResponse)
 
-            console.log(generatedNumber)
+            console.log(response)
 
             yield put (loginSuccess(username))
 
