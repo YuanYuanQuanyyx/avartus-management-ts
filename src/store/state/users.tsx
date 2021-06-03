@@ -1,11 +1,16 @@
 export interface AuthState {
     loggedIn: boolean,
     authenticatedIn: boolean,
-    user: GithubUser,
+    user: any
+    userInfo?: UserInfo
 }
 
-export interface GithubUser {
-    [anyProp: string]: any
+export interface UserInfo {
+    username?: string,
+    password?: string,
+    remember?: boolean,
+    otp_uuid?: string
+    pin?: number
 }
 
 export interface RootState {

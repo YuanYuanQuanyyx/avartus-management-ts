@@ -2,15 +2,14 @@ import { Form, Input, Button, Card } from 'antd';
 import { LockOutlined } from '@ant-design/icons';
 import './admin.css';
 import QRcode from './twoAuth.png'
-import { userActions } from '../../store/actions/users';
 import { useDispatch } from 'react-redux';
+import { authenticateRequest } from '../../slices/auth';
 
 function AdminUser() {
 
     const dispatch = useDispatch();
-    const onFinish = (values: any) => {
-        console.log('Received values of form: ', values);
-        dispatch(userActions.authorize(localStorage.getItem('otp_uuid'), values.pin));
+    const onFinish = (userInfo: any) => {
+        dispatch(authenticateRequest(userInfo));
     };
 
     return  (

@@ -2,7 +2,7 @@ import { Router, Route, Redirect, Switch } from 'react-router-dom';
 import Login from './pages/Login';
 import RegularUser from './pages/users/RegularUser';
 import AdminUser from './pages/users/AdminUser';
-import {history} from './utils/history'
+import { history } from './utils/history'
 
 function App() {
 

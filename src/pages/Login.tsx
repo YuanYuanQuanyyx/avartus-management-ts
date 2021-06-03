@@ -8,9 +8,8 @@ function Login () {
 
     const dispatch = useDispatch();
 
-    const OnFinish = (users: any) => {
-        console.log('Received values of form: ', users);
-        dispatch(loginRequest(users));
+    const OnFinish = (userInfo: any) => {
+        dispatch(loginRequest(userInfo));
     };
 
     return (
