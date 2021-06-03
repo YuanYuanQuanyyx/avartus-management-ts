@@ -1,16 +1,16 @@
 import { Form, Input, Card, Button, Checkbox } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import './login.css';
-import { userActions } from '../store/actions/users';
 import { useDispatch} from 'react-redux';
+import { loginRequest } from '../slices/auth';
 
 function Login () {
 
     const dispatch = useDispatch();
 
-    const OnFinish = (values: any) => {
-        console.log('Received values of form: ', values);
-        dispatch(userActions.login(values.username, values.password, values.remember));
+    const OnFinish = (users: any) => {
+        console.log('Received values of form: ', users);
+        dispatch(loginRequest(users));
     };
 
     return (

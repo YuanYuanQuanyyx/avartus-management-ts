@@ -3,16 +3,14 @@ import { Fragment } from 'react';
 import { Route, Redirect } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import Login from '../Login';
-import { RootState } from '../../store/state/users';
 import { Form, Input, Button, Card } from 'antd';
 import { changeName, logout } from '../../slices/auth';
+import { getAuth } from '../../selectors';
 //import jwt_decode from 'jwt-decode';
 
 function RegularUser() {
 
-    const user = useSelector((state: RootState) => state.authState.user);
-    const loggedIn = useSelector((state: RootState) => state.authState.loggedIn);
-    const authenticatedIn = useSelector((state: RootState) => state.authState.authenticatedIn);
+    const {user, loggedIn, authenticatedIn} = useSelector(getAuth);
 
     const dispatch = useDispatch();
 
